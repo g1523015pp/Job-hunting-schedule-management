@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>就職活動スケジュール管理</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>就職活動スケジュール管理アプリ</h1>
+    </header>
+
+    <nav class="main-nav">
+        <button class="nav-button active" data-view="calendar">カレンダー</button>
+        <button class="nav-button" data-view="diary">日記</button>
+        <button class="nav-button" data-view="companies">企業一覧</button>
+        <button class="nav-button" data-view="results">結果待ち</button>
+    </nav>
+
+    <main>
+        <section id="calendar-view" class="app-view active">
+            <h2>スケジュール</h2>
+            <div class="calendar-controls">
+                <div class="calendar-header">
+                    <button id="prevPeriod" class="nav-button-text">先月</button>
+                    <h3 id="currentPeriod"></h3>
+                    <button id="nextPeriod" class="nav-button-text">来月</button>
+                </div>
+                <div class="view-toggle">
+                    <button id="monthViewBtn" class="active">月表示</button>
+                    <button id="weekViewBtn">週表示</button>
+                    <button id="todayButton" class="nav-button-text">今日</button>
+                </div>
+            </div>
+            <div id="calendar">
+                </div>
+            <div id="eventList">
+                <h3>選択された日付のイベント</h3>
+                <ul>
+                    </ul>
+            </div>
+            <form id="addEditEventForm" style="display:none;">
+                <h3>イベント追加/編集</h3>
+                <input type="hidden" id="eventId">
+                <label for="eventName">イベント名:</label>
+                <input type="text" id="eventName" required><br>
+                <label for="eventCompanyName">企業名:</label>
+                <input type="text" id="eventCompanyName" placeholder="企業名を入力 (任意)"><br>
+                <label for="eventDate">日付:</label>
+                <input type="date" id="eventDate" required><br>
+                <label for="eventTime">時間 (任意):</label>
+                <input type="time" id="eventTime"><br>
+                <label for="eventLocation">場所 (任意):</label>
+                <input type="text" id="eventLocation"><br>
+                <label for="eventDescription">説明 (任意):</label>
+                <textarea id="eventDescription" rows="3"></textarea><br>
+
+                <label>
+                    <input type="checkbox" id="requiresPreRegistration"> 事前登録が必要
+                </label>
+                <div id="preRegistrationDeadlineGroup" style="display:none;">
+                    <label for="preRegistrationDeadline">事前登録締切:</label>
+                    <input type="date" id="preRegistrationDeadline"><br>
+                </div>
+
+                <label for="eventStatus">選考状況:</label>
+                <select id="eventStatus">
+                    <option value="予定">予定</option>
+                    <option value="選考中">選考中</option>
+                    <option value="一次通過">一次通過</option>
+                    <option value="二次通過">二次通過</option>
+                    <option value="最終通過">最終通過</option>
+                    <option value="不採用">不採用</option>
+                    <option value="内定">内定</option>
+                </select><br>
+
+                <div id="resultDueDateGroup" style="display:none;">
+                    <label for="resultDueDate">結果発表予定日:</label>
+                    <input type="date" id="resultDueDate"><br>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" class="primary-button" id="saveEventButton">保存</button>
+                    <button type="button" class="cancel-button" id="cancelEventEditButton">キャンセル</button>
+                    <button type="button" class="delete-button" id="deleteEventButton" style="display:none;">削除</button>
+                </div>
+            </form>
+            <h3>今後のリマインダー</h3>
+            <ul id="reminders">
+            </ul>
+        </section>
+
+        <section id="diary-view" class="app-view">
+            <h2>日記</h2>
+            <div class="diary-input-area">
+                <label for="diaryDate">日付:</label>
+                <input type="date" id="diaryDate"><br>
+                <textarea id="diaryContent" placeholder="今日の日記を書きましょう..."></textarea><br>
+                <div class="form-buttons">
+                    <button id="saveDiaryBtn" class="primary-button">保存</button>
+                    <button id="clearDiaryBtn" class="cancel-button">クリア</button>
+                </div>
+            </div>
+
+            <div id="diaryList" class="diary-list">
+                <h3>過去の日記</h3>
+                <ul>
+                    </ul>
+            </div>
+        </section>
+
+        <section id="companies-view" class="app-view">
+            <h2>企業一覧</h2>
+            <div class="company-view-container">
+                <div class="company-list-area">
+                    <button type="button" id="addCompanyBtn" class="primary-button">企業を追加</button>
+                    <div id="companyList">
+                        </div>
+                </div>
+
+                <div class="company-detail-area">
+                    <div id="company-display-area" style="display:none;">
+                        <button type="button" id="closeCompanyDetailBtn" class="cancel-button small-button">閉じる</button>
+                        <button type="button" id="editCompanyBtn" class="edit-button small-button">企業情報を編集</button>
+                        <h3><span id="companyDisplayName"></span></h3>
+                        <div class="company-detail-item">
+                            <strong>評価:</strong> <span id="companyDisplayRating"></span>
+                        </div>
+                        <div class="company-detail-item">
+                            <strong>オフィス所在地:</strong> <span id="companyDisplayLocation"></span>
+                        </div>
+                        <div class="company-detail-item">
+                            <strong>ホームページ:</strong> <a id="companyDisplayURL" href="#" target="_blank"></a>
+                        </div>
+                        <div class="company-detail-item">
+                            <strong>備考:</strong> <p id="companyDisplayRemarks"></p>
+                        </div>
+
+                        <h4>募集イベント</h4>
+                        <div id="companyRecruitmentEventsList">
+                            </div>
+
+                        <h4>企業イベントカレンダー</h4>
+                        <div class="calendar-controls">
+                            <div class="calendar-header">
+                                <button id="companyPrevMonth" class="nav-button-text">前月</button>
+                                <h3 id="companyCurrentPeriod"></h3>
+                                <button id="companyNextMonth" class="nav-button-text">次月</button>
+                            </div>
+                        </div>
+                        <div id="companyRecruitmentCalendar" class="small-calendar">
+                            </div>
+                        <button type="button" id="showAllLocationsMapBtn" class="primary-button" style="margin-top: 20px;">全企業の所在地を地図で表示</button>
+                    </div>
+
+                    <form id="companyForm" style="display:none;">
+                        <h3 id="companyFormTitle">新しい企業</h3>
+                        <input type="hidden" id="companyId">
+                        <label for="companyName">企業名:</label>
+                        <input type="text" id="companyName" required><br>
+
+                        <label>評価:</label>
+                        <div id="companyFormRating" class="star-rating">
+                            <i class="far fa-star" data-value="1"></i>
+                            <i class="far fa-star" data-value="2"></i>
+                            <i class="far fa-star" data-value="3"></i>
+                            <i class="far fa-star" data-value="4"></i>
+                            <i class="far fa-star" data-value="5"></i>
+                        </div><br>
+
+                        <label>募集イベント:</label>
+                        <div id="recruitmentEventsContainer">
+                            <button type="button" id="addRecruitmentEventBtn" class="small-add-button">募集イベントを追加</button>
+                        </div><br>
+
+                        <label for="companyFormLocation">オフィス所在地:</label>
+                        <input type="text" id="companyFormLocation"><br>
+
+                        <label for="companyFormURL">ホームページURL:</label>
+                        <input type="url" id="companyFormURL"><br>
+
+                        <label for="companyFormRemarks">備考:</label>
+                        <textarea id="companyFormRemarks" rows="5"></textarea><br>
+
+                        <div class="form-buttons">
+                            <button type="submit" class="primary-button">保存</button>
+                            <button type="button" id="cancelCompanyForm" class="cancel-button">キャンセル</button>
+                            <button type="button" id="deleteCompanyBtn" class="delete-button" style="display:none;">企業を削除</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="results-view" class="app-view">
+            <h2>結果待ちのイベント</h2>
+            <div id="pendingResultsList">
+                <p>現在、結果待ちのイベントはありません。</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,844 @@
+body {
+    font-family: 'Noto Sans JP', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f6;
+    color: #333;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 1rem 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+main {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.main-nav {
+    display: flex;
+    justify-content: center;
+    background-color: #e0e0e0;
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.nav-button {
+    background-color: #f0f0f0;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.nav-button:hover {
+    background-color: #e5e5e5;
+    transform: translateY(-2px);
+}
+
+.nav-button.active {
+    background-color: #4CAF50;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.app-view {
+    display: none;
+    padding-top: 20px;
+}
+
+.app-view.active {
+    display: block;
+}
+
+h2 {
+    color: #4CAF50;
+    border-bottom: 2px solid #4CAF50;
+    padding-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+/* --- Calendar Specific Styles --- */
+.calendar-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 10px;
+}
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#currentPeriod {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #555;
+}
+
+.nav-button-text {
+    background: none;
+    border: 1px solid #4CAF50;
+    color: #4CAF50;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-button-text:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.view-toggle {
+    display: flex; /* Make buttons inside horizontal */
+    gap: 5px; /* Add gap between month/week buttons */
+}
+
+.view-toggle button {
+    background-color: #e0e0e0;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    border-radius: 5px;
+}
+
+.view-toggle button.active {
+    background-color: #007bff;
+    color: white;
+}
+
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px; /* Gap adjusted for more compact look */
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.day-header {
+    text-align: center;
+    font-weight: bold;
+    padding: 8px 0; /* Adjusted padding */
+    background-color: #f0f0f0;
+    border-radius: 3px; /* Slightly smaller border-radius */
+    font-size: 0.9em; /* Slightly smaller font size */
+}
+
+.calendar-day {
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    padding: 5px; /* Adjusted padding for more compact cells */
+    min-height: 80px; /* Reduced min-height */
+    box-sizing: border-box;
+    border-radius: 3px; /* Slightly smaller border-radius */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align content to the start (left) */
+    overflow: hidden;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.calendar-day:hover {
+    background-color: #e9e9e9;
+}
+
+.calendar-day.inactive {
+    background-color: #f0f0f0;
+    color: #aaa;
+}
+
+.calendar-day.today {
+    background-color: #e6ffe6; /* Light green background for today */
+    border-color: #4CAF50; /* Green border for today */
+}
+
+.date-number {
+    font-weight: bold;
+    font-size: 1em; /* Ensure good size */
+    margin-bottom: 2px; /* Adjusted margin */
+    color: #555;
+    align-self: flex-start; /* Ensure date number stays at the top-left */
+}
+
+.calendar-day.today .date-number {
+    color: #4CAF50;
+}
+
+.event-indicator {
+    background-color: #4CAF50;
+    color: white;
+    font-size: 0.65rem; /* Smaller font size for events */
+    padding: 1px 3px; /* Smaller padding */
+    border-radius: 2px; /* Smaller border-radius */
+    margin-bottom: 1px; /* Smaller margin between events */
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    align-self: flex-start; /* Ensure event indicator stays at the left */
+}
+
+.event-list {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+
+.event-list h3 {
+    margin-top: 0;
+    color: #4CAF50;
+    font-size: 1.2rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.event-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.event-list li {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.event-list li:last-child {
+    margin-bottom: 0;
+}
+
+.event-info {
+    flex-grow: 1;
+}
+
+.event-info p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.event-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.event-actions button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.edit-event-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.edit-event-btn:hover {
+    background-color: #0056b3;
+}
+
+.delete-event-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.delete-event-btn:hover {
+    background-color: #c82333;
+}
+
+#addEditEventForm {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    margin-top: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+#addEditEventForm label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+#addEditEventForm input[type="text"],
+#addEditEventForm input[type="date"],
+#addEditEventForm input[type="time"],
+#addEditEventForm select,
+#addEditEventForm textarea {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+#addEditEventForm textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.primary-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.primary-button:hover {
+    background-color: #45a049;
+}
+
+.cancel-button {
+    background-color: #6c757d;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.cancel-button:hover {
+    background-color: #5a6268;
+}
+
+.delete-button {
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+}
+
+/* --- Diary Specific Styles --- */
+#diary-view {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.diary-input-area {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+#diary-view input[type="date"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+#diary-view textarea {
+    width: calc(100% - 40px);
+    height: 200px; /* 高さを調整 */
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+#diary-view .form-buttons {
+    justify-content: center;
+}
+
+.diary-list {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.diary-list h3 {
+    color: #4CAF50;
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.diary-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.diary-list-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.diary-list-item:last-child {
+    margin-bottom: 0;
+}
+
+.diary-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.diary-item-date {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.diary-item-actions button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-left: 5px;
+}
+
+.diary-item-actions .load-diary-btn {
+    background-color: #007bff;
+    color: white;
+}
+.diary-item-actions .load-diary-btn:hover {
+    background-color: #0056b3;
+}
+
+.diary-item-actions .delete-diary-btn {
+    background-color: #dc3545;
+    color: white;
+}
+.diary-item-actions .delete-diary-btn:hover {
+    background-color: #c82333;
+}
+
+.diary-item-snippet {
+    font-size: 0.9rem;
+    color: #666;
+    white-space: pre-wrap; /* 改行を保持 */
+    margin: 0;
+}
+
+
+/* --- Companies Specific Styles --- */
+.company-view-container {
+    display: flex;
+    gap: 20px;
+    min-height: 600px; /* 必要に応じて高さを調整 */
+}
+
+.company-list-area {
+    flex: 1; /* リスト部分が利用可能なスペースを占める */
+    max-width: 400px; /* リスト部分の最大幅を設定 */
+    min-width: 300px; /* リスト部分の最小幅を設定 */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.company-detail-area {
+    flex: 2; /* 詳細部分がリストの2倍のスペースを占める */
+    display: flex;
+    flex-direction: column;
+}
+
+#addCompanyBtn {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+#companyList {
+    display: flex;
+    flex-direction: column; /* 企業アイテムを縦に並べる */
+    gap: 10px;
+    overflow-y: auto; /* リストが長い場合にスクロール可能にする */
+    padding-right: 5px; /* スクロールバーのための余白 */
+    flex-grow: 1; /* 残りのスペースを埋める */
+}
+
+.company-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 15px; /* 左右のパディングを調整 */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* 内容を上下に分散 */
+}
+
+.company-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.company-item.selected {
+    border-color: #4CAF50;
+    background-color: #e6ffe6; /* 選択時に背景色を変更 */
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.4);
+}
+
+.company-item h4 {
+    margin-top: 5px; /* 上部のマージンを少し追加 */
+    margin-bottom: 5px;
+    color: #333; /* 黒っぽい色に */
+    font-size: 1.1rem; /* 少し大きく */
+}
+
+.company-item p {
+    margin: 0 0 4px 0; /* マージンを調整 */
+    font-size: 0.85rem; /* フォントサイズを小さく */
+    color: #666;
+}
+
+.company-item .star-rating {
+    color: #ffc107;
+    font-size: 0.9rem; /* 星のサイズを調整 */
+    margin-bottom: 5px;
+}
+
+.company-item .company-actions {
+    display: flex;
+    gap: 8px; /* ボタン間のスペースを調整 */
+    margin-top: 8px; /* 上部のマージンを調整 */
+}
+
+.company-actions button {
+    padding: 6px 12px;
+    border-radius: 5px; /* 少し丸みを大きく */
+    font-size: 0.8rem; /* フォントサイズを小さく */
+    flex-grow: 1; /* ボタンが均等な幅になるように */
+}
+
+.company-actions .details-btn {
+    background-color: #007bff; /* 青色に統一 */
+    color: white;
+}
+
+.company-actions .details-btn:hover {
+    background-color: #0056b3;
+}
+
+.company-actions .edit-btn {
+    background-color: #6c757d; /* グレーに統一 */
+    color: white;
+}
+
+.company-actions .edit-btn:hover {
+    background-color: #5a6268;
+}
+
+/* Company Detail Display */
+#company-display-area {
+    background-color: #f9f9f9;
+    padding: 25px; /* パディングを少し大きく */
+    border-radius: 8px;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* 影を強調 */
+    position: relative;
+    flex-grow: 1; /* 残りのスペースを埋める */
+    display: flex; /* Flexboxを適用 */
+    flex-direction: column; /* 要素を縦に並べる */
+    gap: 15px; /* 要素間のスペース */
+}
+
+#company-display-area h3 {
+    color: #4CAF50;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.8rem; /* 企業名を大きく */
+    border-bottom: 2px solid #4CAF50; /* 下線を追加 */
+    padding-bottom: 10px;
+}
+
+#company-display-area .small-button {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    border-radius: 5px;
+}
+
+#closeCompanyDetailBtn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #dc3545;
+    color: white;
+}
+
+#closeCompanyDetailBtn:hover {
+    background-color: #c82333;
+}
+
+#editCompanyBtn {
+    position: absolute;
+    top: 20px;
+    right: 100px; /* クローズボタンの隣に配置 */
+    background-color: #007bff;
+    color: white;
+}
+
+#editCompanyBtn:hover {
+    background-color: #0056b3;
+}
+
+.company-detail-item {
+    margin-bottom: 10px;
+    font-size: 1.05rem;
+    line-height: 1.5;
+}
+
+.company-detail-item strong {
+    color: #555;
+    margin-right: 5px;
+}
+
+#companyDisplayURL {
+    color: #007bff;
+    text-decoration: none;
+}
+
+#companyDisplayURL:hover {
+    text-decoration: underline;
+}
+
+#companyDisplayRemarks {
+    white-space: pre-wrap; /* 改行を保持 */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    min-height: 80px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+#companyRecruitmentEventsList {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 15px;
+}
+
+.recruitment-event-display-item {
+    background-color: #f0f8ff; /* 薄い水色 */
+    border: 1px solid #b0e0e6;
+    border-radius: 5px;
+    padding: 8px;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.recruitment-event-display-item:last-child {
+    margin-bottom: 0;
+}
+
+.recruitment-event-display-item span {
+    font-weight: bold;
+    color: #333;
+}
+
+.recruitment-event-display-item .type {
+    color: #007bff;
+}
+
+.recruitment-event-display-item .date {
+    color: #28a745;
+}
+
+/* Small calendar specific styles for company detail */
+.small-calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.small-calendar .day-header,
+.small-calendar .calendar-day {
+    padding: 4px;
+    min-height: 40px;
+    font-size: 0.75rem;
+}
+
+.small-calendar .date-number {
+    font-size: 0.85em;
+}
+
+.small-calendar .event-indicator {
+    font-size: 0.6rem;
+    padding: 0 2px;
+}
+
+#companyForm {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    flex-grow: 1; /* 残りのスペースを埋める */
+}
+
+#companyForm label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+#companyForm input[type="text"],
+#companyForm input[type="url"],
+#companyForm textarea {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+#companyForm textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+#companyForm .star-rating {
+    margin-bottom: 15px;
+    font-size: 1.3rem; /* フォームの星を少し大きく */
+}
+
+#recruitmentEventsContainer .recruitment-event-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+#recruitmentEventsContainer .recruitment-event-item input,
+#recruitmentEventsContainer .recruitment-event-item select {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+#recruitmentEventsContainer .recruitment-event-item .remove-recruitment-event-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.small-add-button {
+    background-color: #28a745;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border: none;
+}
+
+.status-選考中 { background-color: #007bff; }
+.status-選考中:hover { background-color: #0056b3; }
+.status-一次通過 { background-color: #28a745; }
+.status-一次通過:hover { background-color: #218838; }
+.status-二次通過 { background-color: #17a2b8; }
+.status-二次通過:hover { background-color: #138496; }
+.status-最終通過 { background-color: #ffc107; color: #333;}
+.status-最終通過:hover { background-color: #e0a800; }
+.status-不採用 { background-color: #dc3545; }
+.status-不採用:hover { background-color: #c82333; }
+.status-内定 { background-color: #6f42c1; }
+.status-内定:hover { background-color: #56369f; }
+
+/* Small calendar specific styles for company detail */
+.small-calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
