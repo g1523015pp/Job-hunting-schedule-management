@@ -1,6 +1,6 @@
 # 就職活動スケジュール管理アプリ
 アプリはこちら
-http://127.0.0.1:5500/index.html
+[http://127.0.0.1:5500/index.html](https://g1523015pp.github.io/Job-hunting-schedule-management/)
 
 ## 概要
 
